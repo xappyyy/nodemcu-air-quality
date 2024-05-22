@@ -1,8 +1,8 @@
 #include "config.h"
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-#include <SoftwareSerial.h>
+#include <HardwareSerial.h>
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -14,19 +14,19 @@ char msg[100];
 unsigned long previousMillis = 0;
 const unsigned long interval = 60000;
 
-EspSoftwareSerial::UART stmSerial(D7, D8);
+HardwareSerial stmSerial(1);
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting...");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while(WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println(".");
   }
   Serial.println("WiFi connected!");
   client.setServer(MQTT_SERVER, MQTT_PORT);
-  stmSerial.begin(115200);
+  stmSerial.begin(115200, SERIAL_8N1, 16, 17);
 }
 
 void loop() {
