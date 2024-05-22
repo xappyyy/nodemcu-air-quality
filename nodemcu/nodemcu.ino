@@ -12,7 +12,7 @@ double humidity = 3.66;
 double dust_density = 4.7;
 char msg[100];
 unsigned long previousMillis = 0;
-const unsigned long interval = 60000;
+const unsigned long interval = 300000;
 
 HardwareSerial stmSerial(2);
 
