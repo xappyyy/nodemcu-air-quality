@@ -14,7 +14,7 @@ char msg[100];
 unsigned long previousMillis = 0;
 const unsigned long interval = 60000;
 
-HardwareSerial stmSerial(1);
+HardwareSerial stmSerial(2);
 
 void setup() {
   Serial.begin(115200);
@@ -36,11 +36,12 @@ void loop() {
   client.loop();
 
   if (stmSerial.available()) {
-    String rawdata = Serial.readString();
+    String rawdata = stmSerial.readString();
+
     String _temp = split(rawdata, ' ', 0);
     String _humid = split(rawdata, ' ', 1);
     String _dust = split(rawdata, ' ', 2);
-    
+    Serial.print(rawdata);
     if((_temp != "") && (_humid != "") && (_dust != "")) {
       double temp = _temp.toDouble();
       double humid = _humid.toDouble();
