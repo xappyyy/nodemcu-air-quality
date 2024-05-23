@@ -7,12 +7,13 @@
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-double temperature = 2.5;
-double humidity = 3.66;
-double dust_density = 4.7;
+double temperature;
+double humidity;
+double dust_density;
 char msg[100];
 unsigned long previousMillis = 0;
-const unsigned long interval = 300000;
+const unsigned long interval = 60000;
+bool isReceived = false;
 
 HardwareSerial stmSerial(2);
 
@@ -43,17 +44,24 @@ void loop() {
     String _dust = split(rawdata, ' ', 2);
     Serial.print(rawdata);
     if((_temp != "") && (_humid != "") && (_dust != "")) {
+      bool validData = true;
       double temp = _temp.toDouble();
       double humid = _humid.toDouble();
       double dust = _dust.toDouble();
-      temperature = temp;
-      humidity = humid;
-      dust_density = dust;
+
+      if (_temp != String(temp) || _humid != String(humid) || _dust != String(dust)) validData = false;
+
+      if (validData) {
+        temperature = temp;
+        humidity = humid;
+        dust_density = dust;
+        isReceived = true;
+      }
     }
   }
 
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval || previousMillis == 0) {
+  if (isReceived && (currentMillis - previousMillis >= interval || previousMillis == 0)) {
     previousMillis = currentMillis;
     JsonDocument doc;
     JsonObject dataObject = doc.createNestedObject("data");
@@ -68,7 +76,6 @@ void loop() {
     Serial.println("Sent");
     delay(1000);
   }
-  yield();
 }
 
 void reconnect() {
@@ -80,7 +87,6 @@ void reconnect() {
       Serial.println("Failed, retrying");
       delay(5000);
     }
-    yield();
   }
 }
 
