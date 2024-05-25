@@ -37,12 +37,14 @@ void loop() {
   client.loop();
 
   if (stmSerial.available()) {
+    Serial.println("reading");
     String rawdata = stmSerial.readStringUntil('\n');
+    rawdata.trim();
 
     String _temp = split(rawdata, ' ', 0);
     String _humid = split(rawdata, ' ', 1);
     String _dust = split(rawdata, ' ', 2);
-    Serial.print(rawdata);
+    Serial.println(rawdata);
     if((_temp != "") && (_humid != "") && (_dust != "")) {
       bool validData = true;
       double temp = _temp.toDouble();
@@ -52,6 +54,9 @@ void loop() {
       if (_temp != String(temp) || _humid != String(humid) || _dust != String(dust)) validData = false;
 
       if (validData) {
+        Serial.println(temp);
+        Serial.println(humid);
+        Serial.println(dust);
         temperature = temp;
         humidity = humid;
         dust_density = dust;
