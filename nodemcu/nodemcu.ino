@@ -20,7 +20,7 @@ HardwareSerial stmSerial(2);
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting...");
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while(WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println(".");
@@ -37,7 +37,7 @@ void loop() {
   client.loop();
 
   if (stmSerial.available()) {
-    String rawdata = stmSerial.readString();
+    String rawdata = stmSerial.readStringUntil('\n');
 
     String _temp = split(rawdata, ' ', 0);
     String _humid = split(rawdata, ' ', 1);
